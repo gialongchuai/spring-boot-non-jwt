@@ -20,7 +20,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	public static final String PASSWORD = "123123";
 
 	@Override
-	public List<BuildingEntity> findAll(Map<String, Object> params) {
+	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typecode) {
 		List<BuildingEntity> buildingEntities = new ArrayList<>();
 		StringBuilder sql = new StringBuilder("select * from building b where 1 = 1 ");
 		try (Connection con = DriverManager.getConnection(DB_URL, USER, PASSWORD);

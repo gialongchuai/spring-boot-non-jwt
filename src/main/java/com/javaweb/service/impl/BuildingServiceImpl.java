@@ -18,8 +18,8 @@ public class BuildingServiceImpl implements BuildingService {
 	private BuildingRepository buildingRepository;
 
 	@Override
-	public List<BuildingDTO> findAll(Map<String, Object> params) {
-		List<BuildingEntity> buildingEntities = buildingRepository.findAll(params);
+	public List<BuildingDTO> findAll(Map<String, Object> params, List<String> typecode) {
+		List<BuildingEntity> buildingEntities = buildingRepository.findAll(params, typecode);
 		List<BuildingDTO> buildingDTOs = new ArrayList<>();
 		for (BuildingEntity x : buildingEntities) {
 			BuildingDTO buildingDTO = new BuildingDTO();
