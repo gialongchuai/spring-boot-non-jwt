@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.Sides;
+
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.NumberUtil;
+import com.javaweb.utils.StringUtil;
 
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
@@ -21,90 +24,39 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	public static final String PASSWORD = "123123";
 
 	public void joniTable(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		if (typecode.toString() != null || !typecode.toString().equals("")) {
+		String value = (String)params.get("value");
+		if(StringUtil.checkString(value)) {
+			sql.append(" join rentarea ra on b.id = ra.buildingid ");
+		}
+		if(typecode != null && typecode.size() != 0) {
 			sql.append(" join buildingrenttype be on be.buildingid = b.id ");
 			sql.append(" join renttype re on re.id = be.renttypeid ");
 		}
-		for (Map.Entry<String, Object> x : params.entrySet()) {
-			if (x.getKey().equals("value")) {
-				if (x.getValue().toString() != null || !x.getValue().toString().equals("")) {
-					sql.append(" join rentarea ra on b.id = ra.buildingid ");
-				}
-
-			}
-		}
-	}
+	} 
 
 	public void queryNormal(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		for (Map.Entry<String, Object> x : params.entrySet()) {
-			if (x.getKey().toString().equals("name")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and b.name like '%" + x.getValue() + "%' ");
-				}
-			}
-			if (x.getKey().toString().equals("floorare")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					if (NumberUtil.checkNumber(x.getValue().toString())) {
-						sql.append(" and b.floorarea = " + Long.parseLong(x.getValue().toString()) + " ");
-					}
-				}
-			}
-			if (x.getKey().toString().equals("district")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					if (NumberUtil.checkNumber(x.getValue().toString())) {
-						sql.append(" and b.districtid = " + Long.parseLong(x.getValue().toString()) + " ");
-					}
-				}
-			}
-			if (x.getKey().toString().equals("ward")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and b.ward like '%" + x.getValue() + "%' ");
-				}
-			}
-			if (x.getKey().toString().equals("street")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and b.street like '%" + x.getValue() + "%' ");
-				}
-			}
-			if (x.getKey().toString().equals("numberofbasement")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					if (NumberUtil.checkNumber(x.getValue().toString())) {
-						sql.append(" and b.numberofbasement = " + Long.parseLong(x.getValue().toString()) + " ");
-					}
-				}
-			}
-			if (x.getKey().toString().equals("managername")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and b.managername like '%" + x.getValue() + "%' ");
-				}
-			}
-			if (x.getKey().toString().equals("managerphonenumber")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and b.managerphonenumber like '%" + x.getValue() + "%' ");
+		for(Map.Entry<String,Object> x : params.entrySet()) {
+			if(!x.getKey().equals("value") && !x.getKey().startsWith("rentprice") && !x.getKey().startsWith("typecode")) {
+				String data = (String)x.getValue();
+				if(NumberUtil.checkNumber(data)) {
+					sql.append(" and b." + x.getKey() + " = " + data + " ");
+				}else {
+					sql.append(" and b." + x.getKey() + " like '%" + data + "%' ");
 				}
 			}
 		}
 	}
 
 	public void querySpecial(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		for (Map.Entry<String, Object> x : params.entrySet()) {
-			if (x.getKey().toString().equals("value")) {
-				if (x.getValue() != null || !x.getValue().equals("")) {
-					sql.append(" and ra.value like '%" + x.getValue() + "%' ");
-				}
-			}
-			if (x.getKey().toString().equals("rentpricefrom")) {
-				if (NumberUtil.checkNumber(x.getValue().toString())) {
-					sql.append(" and b.rentprice >= " + Long.parseLong(x.getValue().toString()) + " ");
-				}
-			}
-			if (x.getKey().toString().equals("rentpriceto")) {
-				if (NumberUtil.checkNumber(x.getValue().toString())) {
-					sql.append(" and b.rentprice <= " + Long.parseLong(x.getValue().toString()) + " ");
-				}
-			}
+		String rentPriceFrom = (String)params.get("rentpricefrom");
+		String rentPriceTo = (String)params.get("rentpriceto");
+		if(StringUtil.checkString(rentPriceFrom)) {
+			sql.append(" and b.rentprice >= " + rentPriceFrom +" ");
 		}
-		if (typecode.toString() != null || typecode.toString().equals("")) {
+		if(StringUtil.checkString(rentPriceTo)) {
+			sql.append(" and b.rentprice <= " + rentPriceTo +" ");
+		}
+		if (typecode != null && typecode.size() != 0) {
 			String x = String.join(",", typecode);
 			String p[] = x.split(",");
 			String h = "";
@@ -122,7 +74,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typecode) {
-		List<BuildingEntity> buildingEntities = new ArrayList<>();
+ 		List<BuildingEntity> buildingEntities = new ArrayList<>();
 		StringBuilder sql = new StringBuilder(
 				"select  b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphonenumber from building b ");
 		joniTable(params, typecode, sql);
@@ -130,8 +82,8 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 		sql.append(where);
 		queryNormal(params, typecode, sql);
 		querySpecial(params, typecode, sql);
-		sql.append(" group by b.id ");
 		System.out.println(sql);
+		sql.append(" group by b.id ");
 
 		try (Connection con = DriverManager.getConnection(DB_URL, USER, PASSWORD);
 				Statement stmt = con.createStatement();
