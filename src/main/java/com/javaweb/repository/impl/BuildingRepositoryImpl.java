@@ -24,57 +24,53 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	public static final String PASSWORD = "123123";
 
 	public void joniTable(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		String value = (String)params.get("value");
-		if(StringUtil.checkString(value)) {
+		String value = (String) params.get("value");
+		if (StringUtil.checkString(value)) {
 			sql.append(" join rentarea ra on b.id = ra.buildingid ");
 		}
-		if(typecode != null && typecode.size() != 0) {
+		if (typecode != null && typecode.size() != 0) {
 			sql.append(" join buildingrenttype be on be.buildingid = b.id ");
 			sql.append(" join renttype re on re.id = be.renttypeid ");
 		}
-	} 
+	}
 
 	public void queryNormal(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		for(Map.Entry<String,Object> x : params.entrySet()) {
-			if(!x.getKey().equals("value") && !x.getKey().startsWith("rentprice") && !x.getKey().startsWith("typecode")) {
-				String data = (String)x.getValue();
-				if(NumberUtil.checkNumber(data)) {
-					sql.append(" and b." + x.getKey() + " = " + data + " ");
-				}else {
-					sql.append(" and b." + x.getKey() + " like '%" + data + "%' ");
+		for (Map.Entry<String, Object> x : params.entrySet()) {
+			if (!x.getKey().equals("value") && !x.getKey().startsWith("rentprice")
+					&& !x.getKey().startsWith("typecode")) {
+				String data = (String) x.getValue();
+				if (StringUtil.checkString(data)) {
+					if (NumberUtil.checkNumber(data)) {
+						sql.append(" and b." + x.getKey() + " = " + data + " ");
+					} else {
+						sql.append(" and b." + x.getKey() + " like '%" + data + "%' ");
+					}
 				}
 			}
 		}
 	}
 
 	public void querySpecial(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		String rentPriceFrom = (String)params.get("rentpricefrom");
-		String rentPriceTo = (String)params.get("rentpriceto");
-		if(StringUtil.checkString(rentPriceFrom)) {
-			sql.append(" and b.rentprice >= " + rentPriceFrom +" ");
+		String rentPriceFrom = (String) params.get("rentpricefrom");
+		String rentPriceTo = (String) params.get("rentpriceto");
+		if (StringUtil.checkString(rentPriceFrom)) {
+			sql.append(" and b.rentprice >= " + rentPriceFrom + " ");
 		}
-		if(StringUtil.checkString(rentPriceTo)) {
-			sql.append(" and b.rentprice <= " + rentPriceTo +" ");
+		if (StringUtil.checkString(rentPriceTo)) {
+			sql.append(" and b.rentprice <= " + rentPriceTo + " ");
 		}
 		if (typecode != null && typecode.size() != 0) {
-			String x = String.join(",", typecode);
-			String p[] = x.split(",");
-			String h = "";
-			for (String e : p) {
-				String m = "'" + e + "'" + ",";
-				h += m;
+			List<String> result = new ArrayList<>();
+			for (String x : typecode) {
+				result.add("'" + x + "'");
 			}
-			String result = "";
-			for(int i = 0 ; i<h.length()-1; i++) {
-                result += h.charAt(i);
-            }
-			sql.append(" and re.code in (" + result + ") ");
+			sql.append(" and re.code in (" + String.join(",", result) + ") ");
 		}
 	}
 
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typecode) {
- 		List<BuildingEntity> buildingEntities = new ArrayList<>();
+		List<BuildingEntity> buildingEntities = new ArrayList<>();
 		StringBuilder sql = new StringBuilder(
 				"select  b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphonenumber from building b ");
 		joniTable(params, typecode, sql);
