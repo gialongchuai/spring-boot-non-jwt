@@ -112,10 +112,4 @@ public class BuildingAPI {
 		List<BuildingDTO> buildingDTOs = buildingService.findAll(params, typecode);
 		return buildingDTOs;
 	};
-
-	
-	
-	
-	
-	
 }

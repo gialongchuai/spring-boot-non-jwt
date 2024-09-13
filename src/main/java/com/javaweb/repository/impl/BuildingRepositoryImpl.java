@@ -93,6 +93,30 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 					sql.append(" and ra.value like '%" + x.getValue() + "%' ");
 				}
 			}
+			if (x.getKey().toString().equals("rentpricefrom")) {
+				if (NumberUtil.checkNumber(x.getValue().toString())) {
+					sql.append(" and b.rentprice >= " + Long.parseLong(x.getValue().toString()) + " ");
+				}
+			}
+			if (x.getKey().toString().equals("rentpriceto")) {
+				if (NumberUtil.checkNumber(x.getValue().toString())) {
+					sql.append(" and b.rentprice <= " + Long.parseLong(x.getValue().toString()) + " ");
+				}
+			}
+		}
+		if (typecode.toString() != null || typecode.toString().equals("")) {
+			String x = String.join(",", typecode);
+			String p[] = x.split(",");
+			String h = "";
+			for (String e : p) {
+				String m = "'" + e + "'" + ",";
+				h += m;
+			}
+			String result = "";
+			for(int i = 0 ; i<h.length()-1; i++) {
+                result += h.charAt(i);
+            }
+			sql.append(" and re.code in (" + result + ") ");
 		}
 	}
 
@@ -117,7 +141,12 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 				buildingEntity.setName(rs.getString("name"));
 				buildingEntity.setStreet(rs.getString("street"));
 				buildingEntity.setWard(rs.getString("ward"));
-				buildingEntity.setDistrictid(rs.getInt("districtid"));
+				buildingEntity.setDistrict(rs.getLong("districtid"));
+				buildingEntity.setNumberOfBasement(rs.getLong("numberofbasement"));
+				buildingEntity.setFloorArea(rs.getLong("floorarea"));
+				buildingEntity.setRentPrice(rs.getLong("rentprice"));
+				buildingEntity.setManagerName(rs.getNString("managername"));
+				buildingEntity.setManagerPhoneNumber(rs.getString("managerphonenumber"));
 				buildingEntities.add(buildingEntity);
 			}
 		} catch (Exception e) {
