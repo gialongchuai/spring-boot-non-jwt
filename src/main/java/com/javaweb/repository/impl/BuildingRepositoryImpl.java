@@ -14,15 +14,12 @@ import org.springframework.stereotype.Repository;
 
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
+import com.javaweb.utils.ConnectionJDBCUtil;
 import com.javaweb.utils.NumberUtil;
 import com.javaweb.utils.StringUtil;
 
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
-	public static final String DB_URL = "jdbc:mysql://localhost:3306/estatebasic";
-	public static final String USER = "root";
-	public static final String PASSWORD = "123123";
-
 	public void joniTable(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
 		String value = (String) params.get("value");
 		if (StringUtil.checkString(value)) {
@@ -72,20 +69,20 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typecode) {
 		List<BuildingEntity> buildingEntities = new ArrayList<>();
 		StringBuilder sql = new StringBuilder(
-				"select  b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphonenumber from building b ");
+				"select b.id, b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphonenumber from building b ");
 		joniTable(params, typecode, sql);
 		String where = " where 1 = 1 ";
 		sql.append(where);
 		queryNormal(params, typecode, sql);
 		querySpecial(params, typecode, sql);
-		System.out.println(sql);
 		sql.append(" group by b.id ");
 
-		try (Connection con = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+		try (Connection con = ConnectionJDBCUtil.getConnection();
 				Statement stmt = con.createStatement();
 				ResultSet rs = stmt.executeQuery(sql.toString())) {
 			while (rs.next()) {
 				BuildingEntity buildingEntity = new BuildingEntity();
+				buildingEntity.setId(rs.getString("id"));
 				buildingEntity.setName(rs.getString("name"));
 				buildingEntity.setStreet(rs.getString("street"));
 				buildingEntity.setWard(rs.getString("ward"));

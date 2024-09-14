@@ -4,6 +4,15 @@ public class BuildingEntity {
 	private String name, street, ward;
 	private Long district, numberOfBasement, floorArea, rentPrice;
 	private String managerName, managerPhoneNumber;
+	private String id;
+	
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}

@@ -5,8 +5,15 @@ public class BuildingDTO {
 	private Long district, numberOfBasement, floorArea, rentPrice;
 	private String managerName, managerPhoneNumber;
 	private String address;
+	private String rentArea;
 	
 	
+	public String getRentArea() {
+		return rentArea;
+	}
+	public void setRentArea(String rentArea) {
+		this.rentArea = rentArea;
+	}
 	public String getAddress() {
 		return address;
 	}

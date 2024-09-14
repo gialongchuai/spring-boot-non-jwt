@@ -14,22 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.javaweb.customException.FieldException;
 import com.javaweb.model.BuildingDTO;
-import com.javaweb.model.CustomerDTO;
-import com.javaweb.model.UserDTO;
 import com.javaweb.service.BuildingService;
-import com.javaweb.service.CustomerService;
-import com.javaweb.service.UserService;
 
 @RestController
 public class BuildingAPI {
-	@Autowired
-	private UserService userService;
-
-	@GetMapping(value="/api/user")
-	public List<UserDTO> getAllUser() {
-		List<UserDTO> userDTOs = userService.findAll();
-		return userDTOs;
-	}
 	
 //	@GetMapping(value = "/api/building/")
 //	public Object building(@RequestParam(value = "tenToaNha") String ten,
@@ -83,14 +71,6 @@ public class BuildingAPI {
 		return null;
 	}
 
-	@Autowired
-	private CustomerService customerService;
-
-	//@GetMapping(value = "api/customer/")
-	public List<CustomerDTO> getCustomer(@RequestParam(value = "name") String name) {
-		List<CustomerDTO> customerDTOs = customerService.findAll(name);
-		return customerDTOs;
-	}
 
 	public void check(String s) throws FieldException {
 		if (s == null || s.equals("")) {
