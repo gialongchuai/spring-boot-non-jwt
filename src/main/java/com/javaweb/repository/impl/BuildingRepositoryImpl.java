@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.print.attribute.standard.Sides;
 
@@ -56,12 +57,18 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 		if (StringUtil.checkString(rentPriceTo)) {
 			sql.append(" and b.rentprice <= " + rentPriceTo + " ");
 		}
+//		if (typecode != null && typecode.size() != 0) {
+//			List<String> result = new ArrayList<>();
+//			for (String x : typecode) {
+//				result.add("'" + x + "'");
+//			}
+//			sql.append(" and re.code in (" + String.join(",", result) + ") ");
+//		}
 		if (typecode != null && typecode.size() != 0) {
-			List<String> result = new ArrayList<>();
-			for (String x : typecode) {
-				result.add("'" + x + "'");
-			}
-			sql.append(" and re.code in (" + String.join(",", result) + ") ");
+			sql.append(" AND(");
+			String tmp = typecode.stream().map(item -> "re.code like" + "'%" + item + "%'").collect(Collectors.joining(" OR "));
+			sql.append(tmp);
+			sql.append(" ) ");
 		}
 	}
 
