@@ -5,8 +5,14 @@ public class BuildingEntity {
 	private Long district, numberOfBasement, floorArea, rentPrice;
 	private String managerName, managerPhoneNumber;
 	private String id;
+	private Long rentArea;
 	
-	
+	public Long getRentArea() {
+		return rentArea;
+	}
+	public void setRentArea(Long rentArea) {
+		this.rentArea = rentArea;
+	}
 	public String getId() {
 		return id;
 	}

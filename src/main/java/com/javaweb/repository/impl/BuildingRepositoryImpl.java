@@ -22,8 +22,9 @@ import com.javaweb.utils.StringUtil;
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
 	public void joniTable(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
-		String value = (String) params.get("value");
-		if (StringUtil.checkString(value)) {
+		String rentAreaFrom = (String)params.get("rentareafrom");
+		String rentAreaTo = (String)params.get("rentareato");
+		if(StringUtil.checkString(rentAreaTo) || StringUtil.checkString(rentAreaFrom)) {
 			sql.append(" join rentarea ra on b.id = ra.buildingid ");
 		}
 		if (typecode != null && typecode.size() != 0) {
@@ -34,7 +35,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 
 	public void queryNormal(Map<String, Object> params, List<String> typecode, StringBuilder sql) {
 		for (Map.Entry<String, Object> x : params.entrySet()) {
-			if (!x.getKey().equals("value") && !x.getKey().startsWith("rentprice")
+			if (!x.getKey().startsWith("rentarea") && !x.getKey().startsWith("rentprice")
 					&& !x.getKey().startsWith("typecode")) {
 				String data = (String) x.getValue();
 				if (StringUtil.checkString(data)) {
@@ -56,6 +57,15 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 		}
 		if (StringUtil.checkString(rentPriceTo)) {
 			sql.append(" and b.rentprice <= " + rentPriceTo + " ");
+		}
+		
+		String rentAreaFrom = (String) params.get("rentareafrom");
+		String rentAreaTo = (String) params.get("rentareato");
+		if (StringUtil.checkString(rentAreaFrom)) {
+			sql.append(" and ra.value >= " + rentAreaFrom + " ");
+		}
+		if (StringUtil.checkString(rentAreaTo)) {
+			sql.append(" and ra.value <= " + rentAreaTo + " ");
 		}
 //		if (typecode != null && typecode.size() != 0) {
 //			List<String> result = new ArrayList<>();
