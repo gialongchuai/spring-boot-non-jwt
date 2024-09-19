@@ -49,6 +49,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 			for (Field item : fields) {
 				item.setAccessible(true);
 				String fieldName = item.getName();
+				System.out.println(fieldName);
 				if (!fieldName.startsWith("rentarea") && !fieldName.startsWith("rentprice")
 						&& !fieldName.startsWith("typecode")) {
 					Object value = item.get(buildingSearchBuilder);
