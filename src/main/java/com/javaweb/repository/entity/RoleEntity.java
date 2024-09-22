@@ -13,22 +13,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "role")
+public class RoleEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "username")
-	private String username;
+	@Column(name = "name")
+	private String name;
 	
-	@Column(name = "password")
-	private Integer password;
+	@Column(name = "code")
+	private String code;
 	
-	@Column(name = "fullname")
-	private String fullname;
-	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
 	private List<UserRoleEntity> userRoleEntities = new ArrayList<>();
 
 	public Long getId() {
@@ -39,28 +36,20 @@ public class UserEntity {
 		this.id = id;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getName() {
+		return name;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public Integer getPassword() {
-		return password;
+	public String getCode() {
+		return code;
 	}
 
-	public void setPassword(Integer password) {
-		this.password = password;
-	}
-
-	public String getFullname() {
-		return fullname;
-	}
-
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public List<UserRoleEntity> getUserRoleEntities() {
@@ -70,6 +59,5 @@ public class UserEntity {
 	public void setUserRoleEntities(List<UserRoleEntity> userRoleEntities) {
 		this.userRoleEntities = userRoleEntities;
 	}
-	
 	
 }

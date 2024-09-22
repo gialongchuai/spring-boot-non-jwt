@@ -29,11 +29,11 @@ public class BuildingDTOConverter {
 	private ModelMapper modelMapper;
 	public BuildingDTO toBuildingDTO(BuildingEntity x) {
 		BuildingDTO buildingDTO = modelMapper.map(x, BuildingDTO.class);
-		DistrictEntity districtRepositories = districtRepository.findNameById(x.getDistrict());
-		buildingDTO.setAddress(x.getWard() + "," + x.getStreet() + "," + districtRepositories.getName());
-		List<RentAreaEntity> rentAreaEntities = rentAreaRepository.findValueByBuildingId(x.getId());
-		String result = rentAreaEntities.stream().map(it -> it.getValue().toString()).collect(Collectors.joining(","));
-		buildingDTO.setRentArea(result);
+//		DistrictEntity districtRepositories = districtRepository.findNameById(x.getDistrict());
+//		buildingDTO.setAddress(x.getWard() + "," + x.getStreet() + "," + districtRepositories.getName());
+//		List<RentAreaEntity> rentAreaEntities = rentAreaRepository.findValueByBuildingId(x.getId());
+//		String result = rentAreaEntities.stream().map(it -> it.getValue().toString()).collect(Collectors.joining(","));
+//		buildingDTO.setRentArea(result);
 		return buildingDTO;
 }
 }

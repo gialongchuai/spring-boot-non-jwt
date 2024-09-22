@@ -1,19 +1,18 @@
 package com.javaweb.repository.impl;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.utils.ConnectionJDBCUtil;
 
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
@@ -49,6 +48,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 			for (Field item : fields) {
 				item.setAccessible(true);
 				String fieldName = item.getName();
+				System.out.println(fieldName);
 				if (!fieldName.startsWith("rentarea") && !fieldName.startsWith("rentprice")
 						&& !fieldName.startsWith("typecode")) {
 					Object value = item.get(buildingSearchBuilder);
@@ -102,10 +102,12 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 			sql.append(" ) ");
 		}
 	}
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder) {
-		List<BuildingEntity> buildingEntities = new ArrayList<>();
+		//List<BuildingEntity> buildingEntities = new ArrayList<>();
 		StringBuilder sql = new StringBuilder(
 				"select b.id, b.name, b.street, b.ward, b.districtid, b.numberofbasement, b.floorarea, b.rentprice, b.managername, b.managerphonenumber from building b ");
 		joniTable(buildingSearchBuilder, sql);
@@ -114,27 +116,28 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 		queryNormal(buildingSearchBuilder, sql);
 		querySpecial(buildingSearchBuilder, sql);
 		sql.append(" group by b.id ");
-
-		try (Connection con = ConnectionJDBCUtil.getConnection();
-				Statement stmt = con.createStatement();
-				ResultSet rs = stmt.executeQuery(sql.toString())) {
-			while (rs.next()) {
-				BuildingEntity buildingEntity = new BuildingEntity();
-				buildingEntity.setId(rs.getString("id"));
-				buildingEntity.setName(rs.getString("name"));
-				buildingEntity.setStreet(rs.getString("street"));
-				buildingEntity.setWard(rs.getString("ward"));
-				buildingEntity.setDistrict(rs.getLong("districtid"));
-				buildingEntity.setNumberOfBasement(rs.getLong("numberofbasement"));
-				buildingEntity.setFloorArea(rs.getLong("floorarea"));
-				buildingEntity.setRentPrice(rs.getLong("rentprice"));
-				buildingEntity.setManagerName(rs.getNString("managername"));
-				buildingEntity.setManagerPhoneNumber(rs.getString("managerphonenumber"));
-				buildingEntities.add(buildingEntity);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return buildingEntities;
+		Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
+//
+//		try (Connection con = ConnectionJDBCUtil.getConnection();
+//				Statement stmt = con.createStatement();
+//				ResultSet rs = stmt.executeQuery(sql.toString())) {
+//			while (rs.next()) {
+//				BuildingEntity buildingEntity = new BuildingEntity();
+//				buildingEntity.setId(rs.getString("id"));
+//				buildingEntity.setName(rs.getString("name"));
+//				buildingEntity.setStreet(rs.getString("street"));
+//				buildingEntity.setWard(rs.getString("ward"));
+//				buildingEntity.setDistrict(rs.getLong("districtid"));
+//				buildingEntity.setNumberOfBasement(rs.getLong("numberofbasement"));
+//				buildingEntity.setFloorArea(rs.getLong("floorarea"));
+//				buildingEntity.setRentPrice(rs.getLong("rentprice"));
+//				buildingEntity.setManagerName(rs.getNString("managername"));
+//				buildingEntity.setManagerPhoneNumber(rs.getString("managerphonenumber"));
+//				buildingEntities.add(buildingEntity);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		return query.getResultList();
 	}
 }
