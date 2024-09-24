@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import com.javaweb.model.BuildingDTO;
 import com.javaweb.service.BuildingService;
 
 @RestController
+@PropertySource("classpath:application.properties")
 public class BuildingAPI {
 	
 //	@GetMapping(value = "/api/building/")
@@ -78,12 +81,13 @@ public class BuildingAPI {
 		}
 	}
 
-	@DeleteMapping(value = "/api/building/{soDuong}/{soNha}")
-	public void deleteBuilding(@PathVariable Integer soDuong, @PathVariable String soNha,
-			@RequestParam(value = "toaNha") String tenToaNha) {
-		System.out
-				.println("Tai so duong: " + soDuong + " co so nha: " + soNha + " va co toan nha ten la: " + tenToaNha);
-	}
+	
+	 @Value("${dev.nguyen}")
+	 private String driver;
+	 @DeleteMapping(value = "/api/building/{id}")
+	 public void deleteBuilding(@PathVariable Long id) {
+		 System.out.println(driver);
+	 }
 
 	@Autowired
 	private BuildingService buildingService;

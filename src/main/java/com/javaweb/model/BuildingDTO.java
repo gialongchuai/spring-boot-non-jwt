@@ -1,12 +1,11 @@
 package com.javaweb.model;
 
 public class BuildingDTO {
-	private String name, street, ward;
-	private Long district, numberOfBasement, floorArea, rentPrice;
-	private String managerName, managerPhoneNumber;
+	
+	private String name, street, ward, managername, managerphonenumber;
+	private Long numberOfBasement, floorarea, rentprice;
 	private String address;
 	private String rentArea;
-	
 	
 	public String getRentArea() {
 		return rentArea;
@@ -38,11 +37,17 @@ public class BuildingDTO {
 	public void setWard(String ward) {
 		this.ward = ward;
 	}
-	public Long getDistrict() {
-		return district;
+	public String getManagername() {
+		return managername;
 	}
-	public void setDistrict(Long district) {
-		this.district = district;
+	public void setManagername(String managername) {
+		this.managername = managername;
+	}
+	public String getManagerphonenumber() {
+		return managerphonenumber;
+	}
+	public void setManagerphonenumber(String managerphonenumber) {
+		this.managerphonenumber = managerphonenumber;
 	}
 	public Long getNumberOfBasement() {
 		return numberOfBasement;
@@ -50,29 +55,17 @@ public class BuildingDTO {
 	public void setNumberOfBasement(Long numberOfBasement) {
 		this.numberOfBasement = numberOfBasement;
 	}
-	public Long getFloorArea() {
-		return floorArea;
+	public Long getFloorarea() {
+		return floorarea;
 	}
-	public void setFloorArea(Long floorArea) {
-		this.floorArea = floorArea;
+	public void setFloorarea(Long floorarea) {
+		this.floorarea = floorarea;
 	}
-	public Long getRentPrice() {
-		return rentPrice;
+	public Long getRentprice() {
+		return rentprice;
 	}
-	public void setRentPrice(Long rentPrice) {
-		this.rentPrice = rentPrice;
-	}
-	public String getManagerName() {
-		return managerName;
-	}
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
-	}
-	public String getManagerPhoneNumber() {
-		return managerPhoneNumber;
-	}
-	public void setManagerPhoneNumber(String managerPhoneNumber) {
-		this.managerPhoneNumber = managerPhoneNumber;
+	public void setRentprice(Long rentprice) {
+		this.rentprice = rentprice;
 	}
 	
 	

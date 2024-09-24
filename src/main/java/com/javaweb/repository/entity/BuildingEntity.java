@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,15 +48,18 @@ public class BuildingEntity {
 	@Column(name = "managerphonenumber")
 	private String managerPhoneNumber;
 
-	@Column(name = "rentarea")
-	private Long rentArea;
-
 	@ManyToOne
 	@JoinColumn(name = "districtid")
 	private DistrictEntity district;
 
 	@OneToMany(mappedBy = "building", fetch = FetchType.LAZY)
 	private List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "buildingrenttype",
+		joinColumns = @JoinColumn(name = "buildingid", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "renttypeid", nullable = false))
+	private List<RentType> rentTypes = new ArrayList<>();
 
 	public List<RentAreaEntity> getRentAreaEntities() {
 		return rentAreaEntities;
@@ -71,15 +76,7 @@ public class BuildingEntity {
 	public void setDistrict(DistrictEntity district) {
 		this.district = district;
 	}
-
-	public Long getRentArea() {
-		return rentArea;
-	}
-
-	public void setRentArea(Long rentArea) {
-		this.rentArea = rentArea;
-	}
-
+	
 	public Long getId() {
 		return id;
 	}
