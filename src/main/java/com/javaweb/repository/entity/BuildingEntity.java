@@ -47,6 +47,25 @@ public class BuildingEntity {
 
 	@Column(name = "managerphonenumber")
 	private String managerPhoneNumber;
+	
+	@Column(name = "level")
+	private String level;
+	
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public List<RentType> getRentTypes() {
+		return rentTypes;
+	}
+
+	public void setRentTypes(List<RentType> rentTypes) {
+		this.rentTypes = rentTypes;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "districtid")
@@ -56,7 +75,7 @@ public class BuildingEntity {
 	private List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 	
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "buildingrenttype",
+	@JoinTable(name = "buildingid",
 		joinColumns = @JoinColumn(name = "buildingid", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "renttypeid", nullable = false))
 	private List<RentType> rentTypes = new ArrayList<>();
